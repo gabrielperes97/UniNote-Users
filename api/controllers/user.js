@@ -4,18 +4,18 @@ let mongoose = require('mongoose');
 let User = mongoose.model('Users');
 let bcrypt = require("bcrypt");
 
-exports.create_a_user = function(req, res) {
-    User.findOne({"username": req.body.username})
+exports.create_a_user = function (req, res) {
+    User.findOne({ "username": req.body.username })
         .then(user => {
-            if(user) {
-                res.json({ success: false, message: "This username has no available"});
+            if (user) {
+                res.json({ success: false, message: "This username has no available" });
             }
-            else{
+            else {
                 bcrypt.hash(req.body.password, 10)
                     .then(hash => {
                         let new_user = new User({
                             username: req.body.username,
-                            email: req.body.email, 
+                            email: req.body.email,
                             password: hash,
                             firstname: req.body.firstname,
                             lastname: req.body.lastname,
@@ -31,7 +31,7 @@ exports.create_a_user = function(req, res) {
         });
 };
 
-exports.read_a_user = function(req, res) {
+exports.read_a_user = function (req, res) {
     let ret = {
         firstname: req.user.firstname,
         lastname: req.user.lastname,
@@ -47,34 +47,28 @@ exports.read_a_user = function(req, res) {
 
 exports.update_a_user = function (req, res) {
     var updated = false;
-    if (req.body.firstname)
-    {
+    if (req.body.firstname) {
         req.user.firstname = req.body.firstname;
         updated = true;
     }
-    if (req.body.lastname)
-    {
+    if (req.body.lastname) {
         req.user.lastname = req.body.lastname;
         updated = true;
     }
-    if (req.body.email)
-    {
+    if (req.body.email) {
         req.user.email = req.body.email;
         updated = true;
     }
-    if (req.body.password)
-    {
+    if (req.body.password) {
         req.user.password = bcrypt.hashSync(req.body.password, 10);
         updated = true;
     }
-    
-    if (updated)
-    {
+
+    if (updated) {
         req.user.save((err, user) => {
-            if(err)
-                res.json({success: false, message: err});
-            else
-            {
+            if (err)
+                res.json({ success: false, message: err });
+            else {
                 let ret = {
                     firstname: user.firstname,
                     lastname: user.lastname,
@@ -89,17 +83,16 @@ exports.update_a_user = function (req, res) {
             }
         });
     }
-    else
-    {
-        res.json({success: false, message: "Don't have a valid field to update"});
+    else {
+        res.json({ success: false, message: "Don't have a valid field to update" });
     }
 };
 
-exports.delete_a_user = function(req, res) {
+exports.delete_a_user = function (req, res) {
     req.user.remove(err => {
         if (err)
-            res.json({success: false, message: err});
+            res.json({ success: false, message: err });
         else
-            res.json({success: true, message: 'User successfully deleted'});
+            res.json({ success: true, message: 'User successfully deleted' });
     });
 };
