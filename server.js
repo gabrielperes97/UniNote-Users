@@ -8,7 +8,9 @@ morgan = require('morgan'),
 
 User = require('./api/models/user'),
 
-bodyParser = require('body-parser');
+bodyParser = require('body-parser'),
+
+cors = require('cors');
 
 config = require('./configs/'+ (process.env.NODE_ENV || "dev") + ".json");
 
@@ -33,6 +35,7 @@ if(process.env.NODE_ENV !== 'test') {
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use(auth.initialize());
 
 let userRoutes = require('./api/routes/user');
